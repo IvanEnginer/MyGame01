@@ -22,8 +22,6 @@ public class Enemy : MonoBehaviour
     {
         _diedVFX?.Invoke();
 
-        var waitForTwoSeconds = new WaitForSeconds(1f);
-
         for (int i = 0; i < _dieDelayFraim; i++)
         {
             yield return null;

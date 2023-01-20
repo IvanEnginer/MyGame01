@@ -5,7 +5,8 @@ public class Spawner : ObjectPool
 {
     [SerializeField] private GameObject[] _enemyTemplates;
     [SerializeField] private Transform[] _spawnPoints;
-    [SerializeField] private float _framesBetweenSpawn = 2000f;
+    [SerializeField] private float _timeBetweenSpawned = 2f;
+    [SerializeField] private bool _isEnabelSpawn = true;
 
 
     private void Start()
@@ -17,22 +18,22 @@ public class Spawner : ObjectPool
 
     private IEnumerator Spawned()
     {
-        for(int i = 0; i < _framesBetweenSpawn; i++)
+        var waitForSpawnedSeconds = new WaitForSeconds(_timeBetweenSpawned);
+
+        while(_isEnabelSpawn)
         {
-            yield return null;
+            if (TryGetObject(out GameObject enemy))
+            {
+                int spawnPointNumber = Random.Range(0, _spawnPoints.Length);
+
+                SetEnemy(enemy, _spawnPoints[spawnPointNumber].position);
+            }
+
+            yield return waitForSpawnedSeconds;
         }
-
-        if (TryGetObject(out GameObject enemy))
-        {
-            int spawnPointNumber = Random.Range(0, _spawnPoints.Length);
-
-            SetEnemy(enemy, _spawnPoints[spawnPointNumber].position);
-        }
-
-        StartCoroutine(Spawned());
     }
 
-private void SetEnemy(GameObject enemy, Vector3 spawnPoint)
+    private void SetEnemy(GameObject enemy, Vector3 spawnPoint)
     {
         enemy.SetActive(true);
         enemy.transform.position = spawnPoint;
